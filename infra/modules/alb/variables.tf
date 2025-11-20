@@ -1,8 +1,8 @@
 variable "vpc" {
-    type = string
+  type = string
 }
 
 variable "public_subnets" {
-    type = list(string)
-  
+  type = list(string)
+
 }

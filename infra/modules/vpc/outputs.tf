@@ -5,10 +5,10 @@ output "private_subnets" {
 
 output "vpc" {
   value = module.vpc.vpc_id
-  
+
 }
 
 output "public_subnets" {
   value = module.vpc.public_subnets
-  
+
 }
