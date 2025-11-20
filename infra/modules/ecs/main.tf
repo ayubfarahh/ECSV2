@@ -12,14 +12,9 @@ module "ecs" {
     }
   }
 
-  # Cluster capacity providers
+  # Capacity provider strategy
   default_capacity_provider_strategy = {
-    FARGATE = { container_definitions = {
-
-        ecs-sample = {
-          cpu       = 256
-          memory    = 512
-          essential = true
+    FARGATE = {
       weight = 50
       base   = 20
     }
@@ -33,14 +28,15 @@ module "ecs" {
       cpu    = 256
       memory = 512
 
-      # Container definition(s)
-      container_definitions = {
-
-        ecs-sample = {
+      # Your ECS task definition (JSON encoded)
+      container_definitions = jsonencode([
+        {
+          name      = "ecs-sample"
           cpu       = 256
           memory    = 512
           essential = true
           image     = "940622738555.dkr.ecr.eu-west-2.amazonaws.com/ecsv2:latest"
+
           portMappings = [
             {
               name          = "ecsv2"
@@ -49,33 +45,35 @@ module "ecs" {
             }
           ]
         }
+      ])
 
-        load_balancer = {
-          service = {
-            target_group_arn = "arn:aws:elasticloadbalancing:eu-west-1:1234567890:targetgroup/bluegreentarget1/209a844cd01825a4"
-            container_name   = "ecs-sample"
-            container_port   = 80
-          }
+      # ALB target group attachment
+      load_balancer = {
+        service = {
+          target_group_arn = var.alb_target_group_arn
+          container_name   = "ecs-sample"
+          container_port   = 3000
         }
+      }
 
-        subnet_ids = var.private_subnets
+      subnet_ids = var.private_subnets
 
-        security_group_ingress_rules = {
-          alb_3000 = {
-            description                  = "Service port"
-            from_port                    = 3000
-            ip_protocol                  = "tcp"
-            referenced_security_group_id = "sg-12345678"
-          }
+      security_group_ingress_rules = {
+        alb_3000 = {
+          description                  = "Allow ALB to reach ECS tasks"
+          from_port                    = 3000
+          to_port                      = 3000
+          ip_protocol                  = "tcp"
+          referenced_security_group_id = var.alb_sg_id
         }
-        security_group_egress_rules = {
-          all = {
-            ip_protocol = "-1"
-            cidr_ipv4   = "0.0.0.0/0"
-          }
+      }
+
+      security_group_egress_rules = {
+        all = {
+          ip_protocol = "-1"
+          cidr_ipv4   = "0.0.0.0/0"
         }
       }
     }
-
   }
 }

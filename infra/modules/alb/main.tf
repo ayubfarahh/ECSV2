@@ -58,7 +58,7 @@ module "alb" {
     ex-instance = {
       name_prefix = "h1"
       protocol    = "HTTP"
-      port        = 80
+      port        = 3000
       target_type = "ip"
     }
   }
