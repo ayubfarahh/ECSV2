@@ -1,6 +1,7 @@
 module "zone" {
   source = "terraform-aws-modules/route53/aws"
 
+  create_zone = true
   name    = "ecsv2.ayubs.uk"
   comment = "Public zone for terraform-aws-modules example"
 

@@ -23,15 +23,16 @@ module "ecs" {
     }
   }
 
+
   services = {
     ecsdemo-frontend = {
       cpu    = 256
       memory = 512
 
-      # Your ECS task definition (JSON encoded)
-      container_definitions = jsonencode([
-        {
-          name      = "ecs-sample"
+      # Container definition(s)
+      container_definitions = {
+
+        fluent-bit = {
           cpu       = 256
           memory    = 512
           essential = true
@@ -44,8 +45,10 @@ module "ecs" {
               protocol      = "tcp"
             }
           ]
+
         }
-      ])
+      }
+
 
       # ALB target group attachment
       load_balancer = {
