@@ -22,6 +22,7 @@ module "alb" {
 
   public_subnets = module.vpc.public_subnets
   vpc            = module.vpc.vpc_id
+  acm_arn        = module.acm.acm_arn
 
 }
 

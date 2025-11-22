@@ -1,5 +1,6 @@
 module "alb" {
-  source = "terraform-aws-modules/alb/aws"
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 10.0"
 
   name    = "my-alb"
   vpc_id  = var.vpc
@@ -29,9 +30,6 @@ module "alb" {
     }
   }
 
-  access_logs = {
-    bucket = "my-alb-logs67"
-  }
 
   listeners = {
     ex-http-https-redirect = {
@@ -46,7 +44,7 @@ module "alb" {
     ex-https = {
       port            = 443
       protocol        = "HTTPS"
-      certificate_arn = ""
+      certificate_arn = var.acm_arn
 
       forward = {
         target_group_key = "ex-instance"
@@ -60,6 +58,12 @@ module "alb" {
       protocol    = "HTTP"
       port        = 3000
       target_type = "ip"
+
+      # FIX: disable attaching targets because ECS handles it, took a while to solve this.
+      create_attachment = false
     }
   }
+
+
+
 }

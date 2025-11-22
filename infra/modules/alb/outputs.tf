@@ -9,7 +9,7 @@ output "alb_zone_id" {
 }
 
 output "alb_target_group_arn" {
-  value = module.alb.target_groups
+  value = module.alb.target_groups["ex-instance"].arn
 
 }
 

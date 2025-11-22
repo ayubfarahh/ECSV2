@@ -7,6 +7,6 @@ module "acm" {
 
   validation_method = "DNS"
 
-  wait_for_validation = true
+  wait_for_validation = false
 
 }

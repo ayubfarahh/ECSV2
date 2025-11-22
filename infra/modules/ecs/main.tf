@@ -29,9 +29,7 @@ module "ecs" {
       cpu    = 256
       memory = 512
 
-      # Container definition(s)
       container_definitions = {
-
         fluent-bit = {
           cpu       = 256
           memory    = 512
@@ -45,16 +43,13 @@ module "ecs" {
               protocol      = "tcp"
             }
           ]
-
         }
       }
 
-
-      # ALB target group attachment
       load_balancer = {
         service = {
           target_group_arn = var.alb_target_group_arn
-          container_name   = "ecs-sample"
+          container_name   = "fluent-bit"
           container_port   = 3000
         }
       }
