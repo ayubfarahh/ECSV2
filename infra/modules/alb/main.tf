@@ -26,7 +26,7 @@ module "alb" {
   security_group_egress_rules = {
     all = {
       ip_protocol = "-1"
-      cidr_ipv4   = "10.0.0.0/16"
+      cidr_ipv4   = "0.0.0.0/0"
     }
   }
 
@@ -56,7 +56,7 @@ module "alb" {
     ex-instance = {
       name_prefix = "h1"
       protocol    = "HTTP"
-      port        = 3000
+      port        = 8080
       target_type = "ip"
 
       # FIX: disable attaching targets because ECS handles it, took a while to solve this.

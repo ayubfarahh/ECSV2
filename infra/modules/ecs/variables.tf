@@ -12,3 +12,18 @@ variable "alb_sg_id" {
   type = string
 
 }
+
+variable "public_subnets" {
+  type = list(string)
+
+}
+
+variable "ecs_role" {
+  type = string
+
+}
+
+variable "ecs_task_role_arn" {
+  type = string
+
+}

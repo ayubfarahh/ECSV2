@@ -12,3 +12,22 @@ module "vpc" {
   enable_nat_gateway = false
 
 }
+
+resource "aws_vpc_endpoint" "ecr-dkr-endpoint" {
+  vpc_id              = module.vpc.vpc_id
+  private_dns_enabled = true
+  service_name        = "com.amazonaws.eu-west-2.ecr.dkr"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [aws_security_group.ecs_task.id]
+  subnet_ids          = module.vpc.private_subnets
+
+}
+
+resource "aws_vpc_endpoint" "ecr-api-endpoint" {
+  vpc_id              = module.vpc.vpc_id
+  service_name        = "com.amazonaws.eu-west-2.ecr.api"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids  = [aws_security_group.ecs_task.id]
+  subnet_ids          = module.vpc.private_subnets
+}

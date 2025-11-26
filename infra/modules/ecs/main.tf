@@ -29,6 +29,9 @@ module "ecs" {
       cpu    = 256
       memory = 512
 
+      execution_role_arn = var.ecs_role
+      task_role_arn      = var.ecs_task_role_arn
+
       container_definitions = {
         fluent-bit = {
           cpu       = 256
@@ -39,8 +42,19 @@ module "ecs" {
           portMappings = [
             {
               name          = "ecsv2"
-              containerPort = 3000
+              containerPort = 8080
               protocol      = "tcp"
+            }
+          ]
+
+          environment = [
+            {
+              name  = "TABLE_NAME"
+              value = "ecsv2-table"
+            },
+            {
+              name  = "AWS_REGION"
+              value = "eu-west-2"
             }
           ]
         }
@@ -50,7 +64,7 @@ module "ecs" {
         service = {
           target_group_arn = var.alb_target_group_arn
           container_name   = "fluent-bit"
-          container_port   = 3000
+          container_port   = 8080
         }
       }
 
@@ -59,8 +73,8 @@ module "ecs" {
       security_group_ingress_rules = {
         alb_3000 = {
           description                  = "Allow ALB to reach ECS tasks"
-          from_port                    = 3000
-          to_port                      = 3000
+          from_port                    = 8080
+          to_port                      = 8080
           ip_protocol                  = "tcp"
           referenced_security_group_id = var.alb_sg_id
         }
