@@ -10,10 +10,10 @@ module "vpc" {
 
   enable_vpn_gateway = true
   enable_nat_gateway = false
-  
+
   // SOOO IMPORTANT FOR ENDPOINTS THIS 
   enable_dns_hostnames = true
-  enable_dns_support = true
+  enable_dns_support   = true
 
 
 }
@@ -77,9 +77,9 @@ resource "aws_vpc_endpoint" "cloud-watch-endpoint" {
 }
 
 resource "aws_vpc_endpoint" "s3_endpoint" {
-  vpc_id              = module.vpc.vpc_id
-  service_name        = "com.amazonaws.eu-west-2.s3"
-  vpc_endpoint_type   = "Gateway"
-  route_table_ids     = module.vpc.private_route_table_ids
+  vpc_id            = module.vpc.vpc_id
+  service_name      = "com.amazonaws.eu-west-2.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = module.vpc.private_route_table_ids
 
 }

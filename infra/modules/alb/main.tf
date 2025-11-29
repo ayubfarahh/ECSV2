@@ -43,9 +43,9 @@ resource "aws_lb_target_group" "alb_tg" {
 
   health_check {
     protocol = "HTTPS"
-    path = "/health"
-    port = 8080
-    matcher = "200-299"
+    path     = "/health"
+    port     = 8080
+    matcher  = "200-299"
   }
 }
 
