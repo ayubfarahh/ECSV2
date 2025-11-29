@@ -1,4 +1,4 @@
 variable "ecs_sg" {
-    type = string
-  
+  type = string
+
 }

@@ -24,22 +24,22 @@ resource "aws_security_group" "sg_endpoints" {
     security_groups = [var.ecs_sg]
   }
 
-  egress{
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
 }
 
 resource "aws_vpc_endpoint" "dynamodb_endpoint" {
-  vpc_id = module.vpc.vpc_id 
+  vpc_id              = module.vpc.vpc_id
   private_dns_enabled = true
-  service_name = "com.amazonaws.eu-west-2.dynamodb"
-  vpc_endpoint_type = "Gateway"
-  route_table_ids = module.vpc.private_route_table_ids
-  
+  service_name        = "com.amazonaws.eu-west-2.dynamodb"
+  vpc_endpoint_type   = "Gateway"
+  route_table_ids     = module.vpc.private_route_table_ids
+
 }
 
 resource "aws_vpc_endpoint" "ecr-dkr-endpoint" {
