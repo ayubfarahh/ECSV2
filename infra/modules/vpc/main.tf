@@ -11,6 +11,9 @@ module "vpc" {
   enable_vpn_gateway = true
   enable_nat_gateway = false
 
+
+
+
 }
 
 resource "aws_security_group" "sg_endpoints" {
@@ -33,14 +36,13 @@ resource "aws_security_group" "sg_endpoints" {
 
 }
 
-resource "aws_vpc_endpoint" "dynamodb_endpoint" {
-  vpc_id              = module.vpc.vpc_id
-  private_dns_enabled = true
-  service_name        = "com.amazonaws.eu-west-2.dynamodb"
-  vpc_endpoint_type   = "Gateway"
-  route_table_ids     = module.vpc.private_route_table_ids
+# resource "aws_vpc_endpoint" "dynamodb_endpoint" {
+#   vpc_id              = module.vpc.vpc_id
+#   service_name        = "com.amazonaws.eu-west-2.dynamodb"
+#   vpc_endpoint_type   = "Gateway"
+#   route_table_ids     = module.vpc.private_route_table_ids
 
-}
+# }
 
 resource "aws_vpc_endpoint" "ecr-dkr-endpoint" {
   vpc_id              = module.vpc.vpc_id

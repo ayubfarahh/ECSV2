@@ -3,11 +3,6 @@ variable "private_subnets" {
 
 }
 
-variable "alb_target_group_arn" {
-  type = string
-
-}
-
 variable "alb_sg_id" {
   type = string
 
@@ -26,4 +21,9 @@ variable "ecs_role" {
 variable "ecs_task_role_arn" {
   type = string
 
+}
+
+
+variable "alb_target_group_arn" {
+  type = string
 }
