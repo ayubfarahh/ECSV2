@@ -1,6 +1,7 @@
 module "vpc" {
   source = "./modules/vpc"
-
+  
+  ecs_sg = module.ecs.ecs_sg
 }
 
 module "iam" {

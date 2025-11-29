@@ -71,7 +71,7 @@ module "ecs" {
       subnet_ids = var.private_subnets
 
       security_group_ingress_rules = {
-        alb_3000 = {
+        alb_8080 = {
           description                  = "Allow ALB to reach ECS tasks"
           from_port                    = 8080
           to_port                      = 8080
