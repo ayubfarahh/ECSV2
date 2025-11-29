@@ -1,7 +1,7 @@
 resource "aws_lb" "alb" {
   name               = "alb-ecsv2"
   load_balancer_type = "application"
-  security_groups    = []
+  security_groups    = [aws_security_group.alb_sg.id]
   subnets            = var.public_subnets
 
 
@@ -35,11 +35,18 @@ resource "aws_security_group" "alb_sg" {
 }
 
 resource "aws_lb_target_group" "alb_tg" {
-  name        = "alb_tg"
+  name        = "alb-tg"
   port        = 8080
-  protocol    = "HTTP"
+  protocol    = "HTTPS"
   target_type = "ip"
   vpc_id      = var.vpc
+
+  health_check {
+    protocol = "HTTPS"
+    path = "/health"
+    port = 8080
+    matcher = "200-299"
+  }
 }
 
 resource "aws_lb_listener" "https" {
@@ -51,7 +58,7 @@ resource "aws_lb_listener" "https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.front_end.arn
+    target_group_arn = aws_lb_target_group.alb_tg.arn
   }
 }
 
