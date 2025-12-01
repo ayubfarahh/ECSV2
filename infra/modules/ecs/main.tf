@@ -1,91 +1,63 @@
-module "ecs" {
-  source = "terraform-aws-modules/ecs/aws"
+resource "aws_ecs_cluster" "ecsv2_cluster" {
+  name = "ecsv2-cluster"
 
-  cluster_name = "ecs-integrated"
+}
 
-  cluster_configuration = {
-    execute_command_configuration = {
-      logging = "OVERRIDE"
-      log_configuration = {
-        cloud_watch_log_group_name = "/aws/ecs/aws-ec2"
-      }
-    }
+resource "aws_ecs_task_definition" "ecsv2_task" {
+  family = "ecsv2"
+  container_definitions = jsonencode([
+    {
+      name      = "app"
+      image     = "40622738555.dkr.ecr.eu-west-2.amazonaws.com/ecsv2:latest"
+      cpu       = 10
+      memory    = 512
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort      = 8080
+        }
+      ]
+  }])
+}
+
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs-sg"
+  vpc_id      = var.vpc
+
+  ingress{
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    security_groups = [var.alb_sg_id]
   }
 
-  # Capacity provider strategy
-  default_capacity_provider_strategy = {
-    FARGATE = {
-      weight = 50
-      base   = 20
-    }
-    FARGATE_SPOT = {
-      weight = 50
-    }
+  egress{
+    from_port = 0
+    to_port = 0
+    protocol = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_ecs_service" "ecsv2_service" {
+  name            = "ecsv2-service"
+  cluster         = aws_ecs_cluster.ecsv2_cluster
+  task_definition = aws_ecs_task_definition.ecsv2_task
+  desired_count   = 1
+  iam_role        = var.ecs_role
+
+
+  load_balancer {
+    target_group_arn = var.alb_target_group_arn
+    container_name   = "app"
+    container_port   = 8080
   }
 
-
-  services = {
-    ecsdemo-frontend = {
-      cpu    = 256
-      memory = 512
-
-      execution_role_arn = var.ecs_role
-      task_role_arn      = var.ecs_task_role_arn
-
-      container_definitions = {
-        fluent-bit = {
-          cpu       = 256
-          memory    = 512
-          essential = true
-          image     = "940622738555.dkr.ecr.eu-west-2.amazonaws.com/ecsv2:latest"
-
-          portMappings = [
-            {
-              name          = "ecsv2"
-              containerPort = 8080
-              protocol      = "tcp"
-            }
-          ]
-
-          environment = [
-            {
-              name  = "TABLE_NAME"
-              value = "ecsv2-table"
-            },
-            {
-              name  = "AWS_REGION"
-              value = "eu-west-2"
-            }
-          ]
-        }
-      }
-
-      load_balancer = {
-        service = {
-          target_group_arn = var.alb_target_group_arn
-          container_name   = "fluent-bit"
-          container_port   = 8080
-        }
-      }
-
-      subnet_ids = var.private_subnets
-
-      security_group_ingress_rules = {
-        alb_8080 = {
-          description                  = "Allow ALB to reach ECS tasks"
-          from_port                    = 8080
-          to_port                      = 8080
-          ip_protocol                  = "tcp"
-          referenced_security_group_id = var.alb_sg_id
-        }
-      }
-
-      security_group_egress_rules = {
-        all = {
-          ip_protocol = "-1"
-          cidr_ipv4   = "0.0.0.0/0"
-        }
-      }
-    }
+  network_configuration {
+    subnets = var.private_subnets
+    security_groups = [ aws_security_group.ecs_sg.id ]
   }
+
+  
 }

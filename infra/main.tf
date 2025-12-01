@@ -18,6 +18,7 @@ module "ecs" {
   alb_target_group_arn = module.alb.alb_target_group_arn
   ecs_role             = module.iam.ecs_role
   ecs_task_role_arn    = module.iam.ecs_task_role_arn
+  vpc = module.vpc.vpc_id
 
 }
 

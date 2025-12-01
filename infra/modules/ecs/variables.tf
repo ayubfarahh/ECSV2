@@ -27,3 +27,8 @@ variable "ecs_task_role_arn" {
 variable "alb_target_group_arn" {
   type = string
 }
+
+variable "vpc" {
+  type = string
+  
+}

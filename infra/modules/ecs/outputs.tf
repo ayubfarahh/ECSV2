@@ -1,3 +1,3 @@
 output "ecs_sg" {
-  value = module.ecs.services["ecsdemo-frontend"].security_group_id
+  value = aws_security_group.ecs_sg.id
 }

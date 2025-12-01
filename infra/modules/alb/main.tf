@@ -37,12 +37,12 @@ resource "aws_security_group" "alb_sg" {
 resource "aws_lb_target_group" "alb_tg" {
   name        = "alb-tg"
   port        = 8080
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc
 
   health_check {
-    protocol = "HTTPS"
+    protocol = "HTTP"
     path     = "/health"
     port     = 8080
     matcher  = "200-299"
