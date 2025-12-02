@@ -30,5 +30,5 @@ variable "alb_target_group_arn" {
 
 variable "vpc" {
   type = string
-  
+
 }
